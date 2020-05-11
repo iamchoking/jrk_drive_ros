@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>jrk_drive_ros</name>
+  <version>0.1.0</version>
+  <description>The jrk_motor_node package modified bottom-up</description>
+
+  <maintainer email="planner.king@gmail.com">hhchoi</maintainer>
+
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+
+
+  <build_export_depend>rospy</build_export_depend>
+  <build_export_depend>std_msgs</build_export_depend>
+  <build_export_depend>geometry_msgs</build_export_depend>
+
+
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>message_runtime</exec_depend>
+
+
+  <export>
+  </export>
+</package>

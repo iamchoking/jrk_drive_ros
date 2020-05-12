@@ -70,7 +70,7 @@ def translate(channel): #left,back,down is -negative
 #7: SD lever (994(down) 1494(middle) 1994(up))
 #(there are a total of 18 channels (up to #17) but #8 and above do not seem to change with buttons)
 	if len(channel) == 0:
-		print "Mavlink Signal >> No Signal"
+		rospy.loginfo "Mavlink Signal >> No Signal"
 		return (0,0,0,0,0,0,0,0)
 	roll = percent((995,1494,1993,True),channel[0],3)
 	pitch = percent((984,1488,2005,True),channel[1],3)
@@ -103,7 +103,7 @@ def translate(channel): #left,back,down is -negative
 		SD = 0
 	else:
 		SD = 1
-	print 'Mavlink Signal >> R: %.2f, P: %.2f, Y: %.2f, T: %.2f, SA = %d,SB = %d, SC = %d, SD = %d' %(roll,pitch,yaw,throttle,SA,SB,SC,SD)
+	rospy.loginfo('Mavlink Signal >> R: %.2f, P: %.2f, Y: %.2f, T: %.2f, SA = %d,SB = %d, SC = %d, SD = %d' %(roll,pitch,yaw,throttle,SA,SB,SC,SD))
 	return roll,pitch,yaw,throttle,SA,SB,SC,SD
 
 ######################## MESSAGE TRANSLATION (To send) ########################
@@ -140,7 +140,7 @@ def pub(*v):
 	if _right < -100:
 		_right = -100
 
-	print ('Mavlink Teleop >> L: %.1f p., R: %.1f p., TRN: %.1f, ROT: %.1f'%(_left,_right,_trans,_rot))
+	rospy.loginfo('Mavlink Teleop >> L: %.1f p., R: %.1f p., TRN: %.1f, ROT: %.1f'%(_left,_right,_trans,_rot))
 	if len(v) == 0:
 		arr.data = [conv(int(_left)),conv(int(_right))]
 	elif len(v) == 1:

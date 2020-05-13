@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<launch>
+	<node pkg="jrk_drive_ros" type="jrk_drive.py" name="jrk_drive" output="screen"/>
+	<node pkg="jrk_teleop_key" type="jrk_teleop_key.py" name="jrk_test" output="screen"/>
+</launch>

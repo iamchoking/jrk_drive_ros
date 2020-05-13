@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<launch>
+	<arg name = "mode" default = "INFO"/>
+	<param name = "mode" value = "$(arg mode)" />
+	<node pkg="jrk_drive_ros" type="jrk_drive.py" name="jrk_drive" output="screen"/>
+	<node pkg="jrk_drive_ros" type="jrk_test.py" name="jrk_test" output="screen"/>
+</launch>

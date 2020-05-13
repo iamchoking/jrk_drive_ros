@@ -1,14 +1,28 @@
 #!/usr/bin/python
 
 import rospy
+#import sys
 #import std_msgs
 from std_msgs.msg import String
 from std_msgs.msg import UInt16MultiArray
+import time
+
 
 print("starting jrk_test")
 
 jrk_pub = rospy.Publisher('jrk_target', UInt16MultiArray, queue_size=1)
-rospy.init_node('test_jrk')
+
+#INITIALIZE ROS NODE#
+nodeName = "jrk_test"
+logLevel = rospy.get_param('mode','DEBUG')
+if logLevel == 'RUN':
+	rospy.init_node(nodeName, anonymous=False, log_level=rospy.WARNING, disable_signals=True)
+elif logLevel == 'INFO':
+	rospy.init_node(nodeName, anonymous=False, log_level=rospy.INFO, disable_signals=True)
+else:
+	rospy.init_node(nodeName, anonymous=False, log_level=rospy.DEBUG, disable_signals=True)
+rospy.loginfo("< running %s on %s mode >"%(nodeName,logLevel))
+######################
 
 arr = UInt16MultiArray()
 
@@ -20,13 +34,18 @@ def stop():
 	return pub(2048,2048)
 
 def sweep():
-    for i in range(0,4095,10):
-        rospy.loginfo('Sweep>> %d'%i)
-	pub(i,i)
-        rospy.sleep(0.02)
-    return stop()
+	rospy.loginfo("> Sweep Started \n")
+	for i in range(0,4095,10):
+		rospy.logdebug("Sweep >> %d"%(i))
+		time.sleep(0.005)
+		pub(i,i)
+	rospy.loginfo("> Sweep Finished")
+	return stop()
 
 def _execute(cmd):
+	# print (cmd)
+	if cmd == '':
+		return
 	if cmd == 'sweep':
 		return sweep()
 	if cmd[0] == 's':
@@ -45,12 +64,14 @@ def _execute(cmd):
 		return pub((int(a[1])),(int(a[2])))
 
 
+
 rospy.loginfo ('>>> jrk test node initialized. \n\nAvailable commands: sweep, s, w, r \n\n')
 while True:
 	try:
 		_execute(raw_input("jrk test cmd>>  "))
-	except rospy.ROSInterruptException:
+	except KeyboardInterrupt:
+		rospy.logerr('Interrupted by User')
 		break
-	except:
-		rospy.logerr('External Error')
-		break
+	# except:
+	# 	rospy.logerr('External Error')
+	# 	break

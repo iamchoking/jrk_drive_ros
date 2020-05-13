@@ -24,7 +24,7 @@ _state_up = False
 _state_down = False
 
 jrk_pub = rospy.Publisher('jrk_target', UInt16MultiArray, queue_size=1)
-rospy.init_node('jrk_teleop')
+rospy.init_node('jrk_teleop_key')
 
 arr = UInt16MultiArray()
 

@@ -1,5 +1,0 @@
-<?xml version="1.0" ?>
-<launch>
-	<node pkg="jrk_motor_node" type="jrk_test_pub.py" name="jrk_test_publisher" output="screen"/>
-	<node pkg="jrk_motor_node" type="jrk_subscribe.py" name="jrk_subscriber" output="screen"/>
-</launch>

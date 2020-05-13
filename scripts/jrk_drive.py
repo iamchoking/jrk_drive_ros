@@ -8,14 +8,25 @@ import time
 
 from geometry_msgs.msg import Twist
 
+#INITIALIZE ROS NODE#
+nodeName = "jrk_drive"
+logLevel = rospy.get_param('mode','DEBUG')
+if logLevel == 'RUN':
+	rospy.init_node(nodeName, anonymous=False, log_level=rospy.WARNING)
+elif logLevel == 'INFO':
+	rospy.init_node(nodeName, anonymous=False, log_level=rospy.INFO)
+else:
+	rospy.init_node(nodeName, anonymous=False, log_level=rospy.DEBUG)
+rospy.loginfo("< running %s on %s mode >"%(nodeName,logLevel))
+######################
+
+#JRK MOTOR CONNECTION SEQUENCE#
 _Left =  '00287664'
 _Right = '00291758'
 
 #Connects jrk motor drivers with given serials
 _Left_Operational = True
 _Right_Operational = True
-
-rospy.init_node("jrk_drive", anonymous=False)
 
 # serL: /dev/serial/by-id/usb-Pololu_Corporation_Pololu_Jrk_G2_18v19_00287664-if01
 # serR: /dev/serial/by-id/usb-Pololu_Corporation_Pololu_Jrk_G2_18v19_00291758-if01
@@ -37,7 +48,7 @@ except:
 #print("connected to: " + serL.portstr)
 
 if _Left_Operational or _Right_Operational:
-	def _drive(ser,target,side):
+	def _drive(ser,target,side = ''):
 		if target < 5:
 			lowByte = 0	#ser.write(chr(0))
 			highByte = 192	#ser.write(chr(192))
@@ -50,12 +61,12 @@ if _Left_Operational or _Right_Operational:
 			#print("about to write", lowByte, highByte)
 		ser.write(chr(lowByte))
 		ser.write(chr(highByte))
-		rospy.loginfo("Drive>> %s, target: %s, Written: %d, %d" %(side,target,lowByte,highByte))
+		rospy.logdebug("Drive>> %s, target: %s, Written: %d, %d" %(side,target,lowByte,highByte))
 		#print(type(lowByte))
 
 
 	def subscriber_Uint16MultiArray(message):
-		rospy.loginfo("Sub>> detected incoming UInt16MultiArray : [ %s  %s ]"%(message.data[0],message.data[1]))
+		rospy.logdebug("Sub  >> detected incoming UInt16MultiArray : [ %s  %s ]"%(message.data[0],message.data[1]))
 		if _Left_Operational:
 			_drive(serL,message.data[0],"Left ")
 		if _Right_Operational:
@@ -64,9 +75,12 @@ if _Left_Operational or _Right_Operational:
 	#rospy.init_node("jrk_drive", anonymous=False)
 	rospy.Subscriber("jrk_target", std_msgs.msg.UInt16MultiArray, subscriber_Uint16MultiArray)
 	rospy.loginfo('>>> Jrk Motor Driving Node Initialized <<<')
+	# while not rospy.is_shutdown():
+	# 	pass
 	rospy.spin()
+	rospy.loginfo("[Shutdown] MOTORS STOPPED")
+	_drive(serL,2048)
+	_drive(serR,2048)
 else:
 	rospy.logerr("No Motors Were Connected. Shutting Down.")
 	rospy.signal_shutdown("No Motor Connection")
-
-

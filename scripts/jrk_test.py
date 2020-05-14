@@ -10,7 +10,8 @@ import time
 
 print("starting jrk_test")
 
-jrk_pub = rospy.Publisher('jrk_target', UInt16MultiArray, queue_size=1)
+#jrk_pub = rospy.Publisher('jrk_target', UInt16MultiArray, queue_size=1)
+jrk_pub_raw = rospy.Publisher('jrk_target_raw', UInt16MultiArray, queue_size=1)
 
 #INITIALIZE ROS NODE#
 nodeName = "jrk_test"
@@ -21,14 +22,15 @@ elif logLevel == 'INFO':
 	rospy.init_node(nodeName, anonymous=False, log_level=rospy.INFO, disable_signals=True)
 else:
 	rospy.init_node(nodeName, anonymous=False, log_level=rospy.DEBUG, disable_signals=True)
-rospy.loginfo("< running %s on %s mode >"%(nodeName,logLevel))
+rospy.loginfo("[Node Initialized] < running %s on %s mode >"%(nodeName,logLevel))
 ######################
 
 arr = UInt16MultiArray()
 
 def pub(L,R):
 	arr.data = [L,R]
-	jrk_pub.publish(arr)
+	#jrk_pub.publish(arr)
+	jrk_pub_raw.publish(arr)
 
 def stop():
 	return pub(2048,2048)

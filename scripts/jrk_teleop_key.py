@@ -23,8 +23,19 @@ _state_right = False
 _state_up = False
 _state_down = False
 
-jrk_pub = rospy.Publisher('jrk_target', UInt16MultiArray, queue_size=1)
-rospy.init_node('jrk_teleop_key')
+jrk_pub = rospy.Publisher('jrk_target_raw', UInt16MultiArray, queue_size=1)
+
+#INITIALIZE ROS NODE#
+nodeName = "jrk_teleop_key"
+logLevel = rospy.get_param('mode','DEBUG')
+if logLevel == 'RUN':
+	rospy.init_node(nodeName, anonymous=False, log_level=rospy.WARNING)
+elif logLevel == 'INFO':
+	rospy.init_node(nodeName, anonymous=False, log_level=rospy.INFO)
+else:
+	rospy.init_node(nodeName, anonymous=False, log_level=rospy.DEBUG)
+rospy.loginfo("[Node Initialized] < running %s on %s mode >"%(nodeName,logLevel))
+######################
 
 arr = UInt16MultiArray()
 
@@ -48,7 +59,7 @@ def pub(*v):
 	if _right < -100:
 		_right = -100
 
-	print ('Teleop >> L: %.1f p., R: %.1f p., TRN: %.1f, ROT: %.1f'%(_left,_right,_trans,_rot))
+	rospy.logdebug('Teleop >> L: %.1f p., R: %.1f p., TRN: %.1f, ROT: %.1f'%(_left,_right,_trans,_rot))
 	if len(v) == 0:
 		arr.data = [conv(int(_left)),conv(int(_right))]
 	elif len(v) == 1:
@@ -144,7 +155,7 @@ def on_release(key):
 	if key == key.esc:
 		return False
 	return drive()
-print (">>> jrk key teleop initialized. Press arrow keys for manuver, esc to exit")
+rospy.loginfo(">>> jrk key teleop initialized. Press arrow keys for manuver, esc to exit")
 with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
     listener.join()
 

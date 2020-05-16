@@ -3,9 +3,9 @@
 import rospy
 #import std_msgs
 
-from std_msgs.msg import String
+#from std_msgs.msg import String
 from std_msgs.msg import UInt16MultiArray
-from geometry_msgs.msg import Twist
+#from geometry_msgs.msg import Twist
 
 from pynput import keyboard
 
